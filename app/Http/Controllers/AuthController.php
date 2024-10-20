@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use PhpParser\Node\Expr\Cast\Unset_;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -28,6 +30,22 @@ class AuthController extends Controller
         }
         
         // buat token jika semua kondisi sudah memenuhi
-        return $result->createToken("User Login")->plainTextToken;
+        unset($result->email_verified_at);
+        unset($result->created_at);
+        unset($result->updated_at);
+
+        // delete token sebelumnya
+        $result->tokens()->delete();
+        // create new token
+        $token = $result->createToken("User Login")->plainTextToken;
+        
+        // add token ke detail user
+        $result->token = $token;
+        // retiurn hasil 
+        return response()->json(['data'=>$result]);
+    }
+
+    public function me(){
+        return response()->json(['data'=>Auth::user()]);
     }
 }
