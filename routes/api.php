@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\UserOrderMiddleware;
 use App\Http\Middleware\AbleCreateUpdateItem;
@@ -29,5 +30,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // create user khusus manager
     Route::post('/create_user',[UserController::class,'store'])->middleware([ManagerCreateUserMiddleware::class]);
-    Route::post('/create_item',[UserController::class,'storeNewItem'])->middleware([AbleCreateUpdateItem::class]);
+    Route::post('/create_item',[ItemController::class,'store'])->middleware([AbleCreateUpdateItem::class]);
+    Route::put('/item/{id}/update',[ItemController::class,'update'])->middleware([AbleCreateUpdateItem::class]);
 });
