@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\ManagerCreateUserMiddleware;
 use App\Http\Middleware\UserOrderMiddleware;
 use App\Http\Middleware\UserFinishOrderMiddleware;
@@ -16,7 +17,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/me',[AuthController::class,'me']);
 
     // create order
-    Route::get('/create_order', function(){
+    Route::post('/create_order', function(){
     return Auth::user() ;
     })->middleware([UserOrderMiddleware::class]);
 
@@ -26,7 +27,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     })->middleware([UserFinishOrderMiddleware::class]);
 
     // create user khusus manager
-    Route::post('/create_user',function(){
-        return "Created User";
-    })->middleware([ManagerCreateUserMiddleware::class]);
+    Route::post('/create_user',[UserController::class,'store'])->middleware([ManagerCreateUserMiddleware::class]);
 });

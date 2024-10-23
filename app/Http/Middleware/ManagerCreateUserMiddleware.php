@@ -19,7 +19,7 @@ class ManagerCreateUserMiddleware
     {
         $user = Auth::user();
         if($user->role_id !=  4){
-            return response()->json(['message'=>'Not Found'],404);
+            return response()->json(['message'=>'You don’t have permission to access on this page'],403);
         }
         return $next($request);
     }

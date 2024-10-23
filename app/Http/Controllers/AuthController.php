@@ -29,19 +29,19 @@ class AuthController extends Controller
             ]);
         }
         
-        // buat token jika semua kondisi sudah memenuhi
+        // unset beberapa detail login
         unset($result->email_verified_at);
         unset($result->created_at);
         unset($result->updated_at);
 
-        // delete token sebelumnya
+        // delete token sebelumnya | untuk mengatasi multiple login
         $result->tokens()->delete();
         // create new token
         $token = $result->createToken("User Login")->plainTextToken;
         
         // add token ke detail user
         $result->token = $token;
-        // retiurn hasil 
+        // return | kembalikan hasil 
         return response()->json(['data'=>$result]);
     }
 
