@@ -19,7 +19,7 @@ class UserOrderMiddleware
         //cek apakah yang login adalah waitress atau manager
         if(Auth::user()->role_id !=4 && Auth::user()->role_id !=1){
             // return abort(404);
-            return response()->json(['message'=>'Not Found'], 404);
+            return response()->json(['message'=>'You don’t have permission to access on this page'], 403);
         }
         
         return $next($request);

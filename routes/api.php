@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\UserOrderMiddleware;
 use App\Http\Middleware\AbleCreateUpdateItem;
@@ -15,13 +16,11 @@ use App\Http\Middleware\ManagerCreateUserMiddleware;
 Route::post('/login/auth',[AuthController::class,'login']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    // me
+    // me 
     Route::get('/me',[AuthController::class,'me']);
 
     // create order
-    Route::post('/create_order', function(){
-    return Auth::user() ;
-    })->middleware([UserOrderMiddleware::class]);
+    Route::post('/create_order',[OrderController::class,'store'])->middleware([UserOrderMiddleware::class]);
 
     // finish order 
     Route::get('/finish_order', function () {
