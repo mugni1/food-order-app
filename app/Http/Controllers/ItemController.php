@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
@@ -61,5 +62,10 @@ class ItemController extends Controller
         $update->update($request->all()); 
 
         return response()->json(['status'=>"Succes Update Item","data"=>$update]);
+    }
+
+    public function show(){
+        $items = Item::get(['id','name','price','created_at','updated_at',]);
+        return response()->json(["data"=>$items]);
     }
 }

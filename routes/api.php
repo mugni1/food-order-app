@@ -30,6 +30,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // create user khusus manager
     Route::post('/create_user',[UserController::class,'store'])->middleware([ManagerCreateUserMiddleware::class]);
+
+    // create items
     Route::post('/create_item',[ItemController::class,'store'])->middleware([AbleCreateUpdateItem::class]);
+    // update items
     Route::put('/item/{id}/update',[ItemController::class,'update'])->middleware([AbleCreateUpdateItem::class]);
 });
+
+//GET ITEMS LIST
+Route::get('/items',[ItemController::class,'show']);
