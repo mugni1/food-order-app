@@ -19,17 +19,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // me 
     Route::get('/me',[AuthController::class,'me']);
 
+    // ORDERS
     // create order
     Route::post('/create_order',[OrderController::class,'store'])->middleware([UserOrderMiddleware::class]);
-
-    // finish order 
-    Route::get('/finish_order', function () {
-    return "finish order";
-    })->middleware([UserFinishOrderMiddleware::class]);
-
+    
+    // USERS
     // create user khusus manager
     Route::post('/create_user',[UserController::class,'store'])->middleware([ManagerCreateUserMiddleware::class]);
 
+    //ITEMS
     // create items
     Route::post('/create_item',[ItemController::class,'store'])->middleware([AbleCreateUpdateItem::class]);
     // update items
