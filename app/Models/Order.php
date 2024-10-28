@@ -14,8 +14,24 @@ class Order extends Model
     protected $fillable = ['customer_name','table_no','order_date','order_time','status','total','waitress_id'];
 
     public function sumTotalPrice($order_id){
-        $orderDetail = OrderDetail::where('order_id', $order_id)->pluck('price');
-        return collect($orderDetail)->sum();
+        //////  CARA 1
+        // $data = OrderDetail::where('order_id', $order_id)
+        //->with('Item:id,price')
+        //->get();
+        // $sum = $data->sum(function($orderDetail) {
+        //     return $orderDetail->Item->price ?? 0;
+        // });
+        // return $sum;
+
+        //////  CARA 2
+        $prices = OrderDetail::where('order_id', $order_id)
+        ->with('Item') // Memastikan hanya kolom id dan price dari Item yang diambil
+        ->get()
+        ->pluck('Item.price') // Mengambil hanya kolom price dari setiap Item terkait
+        ->filter(); // Menghapus nilai null jika ada Item yang tidak memiliki price
+
+        $sum = collect($prices)->sum();
+        return $sum;
     }
 
     /**

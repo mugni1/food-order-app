@@ -41,7 +41,7 @@ class OrderController extends Controller
         $result = Order::create($data);
         ///////////////////////////// END ORDER TABLE /////////////////////////////////
 
-        /////////////////////////////// ORDER DETAIL ////////////////////////////////////
+        /////////////////////////////// ORDER_DETAIL ////////////////////////////////////
         $items = $request->items; //get request items
         // collect all items and mapping all and send to order_detail table
         collect($items)->map(function($item) use($result) {
@@ -53,7 +53,7 @@ class OrderController extends Controller
                 'price' => $FoodDrink->price
             ]);
         });
-         //////////////////////////// END ORDER DETAIL //////////////////////////////////
+         //////////////////////////// END ORDER_DETAIL //////////////////////////////////
 
         ////////////////////////////// EDIT TOTAL IN ORDER TABLE ///////////////////////////
         // change total column, before 0 to real price
