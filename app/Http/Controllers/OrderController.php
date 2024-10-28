@@ -8,41 +8,63 @@ use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use function Laravel\Prompts\select;
+
 class OrderController extends Controller
 {
+
+    public function index(){
+        $result = Order::select(['id','customer_name','table_no','order_date','order_time','status','total'])->get();
+        return response()->json(["data"=>$result]);
+    }
+
+    public function show($id){
+        $result = Order::select(['id','customer_name','table_no','status','waitress_id','cashier_id','total','order_date','order_time'])->findOrFail($id);
+        return $result->loadMissing('OrderDetail:order_id,price,item_id','OrderDetail.Item:id,name,price');
+    }
+
     public function store(Request $request){
         $request->validate([
             'customer_name' => 'required|max:225',
             'table_no' => 'required|max:5'
         ]);
-
-        //ambil dat tampung data yang di request
-        $data = $request->only(['customer_name','table_no']); // tampung nama dan table_no saja
-
-        // tambahan | otomatis 
+        
+        //////////////////////////////// ORDER TABLE //////////////////////////////////
+        $data = $request->only(['customer_name','table_no']); // get request only 'customer_name' and 'table_no'
+        // add addons to send order table
         $data['order_date'] = date('Y-m-d');
         $data['order_time'] = date('H:i:s');
         $data['status'] = "ordered";
         $data['total'] = 0;
         $data['waitress_id'] = Auth::user()->id;
-        // list items
-        $data['items'] = $request->items;
-
-        // kirim ke Table Order
+        // send to order table 
         $result = Order::create($data);
+        ///////////////////////////// END ORDER TABLE /////////////////////////////////
 
-        collect($data['items'])->map(function($item) use($result) {
-            $FoodDrink = Item::where('id', $item)->first();
+        /////////////////////////////// ORDER DETAIL ////////////////////////////////////
+        $items = $request->items; //get request items
+        // collect all items and mapping all and send to order_detail table
+        collect($items)->map(function($item) use($result) {
+            $FoodDrink = Item::where('id', $item)->first(); // get firt item in item table 
+            // send to order_detail table
             OrderDetail::create([
                 'order_id' => $result->id,
                 'item_id' => $item,
                 'price' => $FoodDrink->price
             ]);
         });
+         //////////////////////////// END ORDER DETAIL //////////////////////////////////
 
-        // kirm dan edit column total dari 0 menjadi total dari price
-        $result['total'] = $result->sumTotalPrice($result->id);
+        ////////////////////////////// EDIT TOTAL IN ORDER TABLE ///////////////////////////
+        // change total column, before 0 to real price
+        $result['total'] = function () use($result) {
+            $orderDetail = OrderDetail::where('order_id', $result->id)->pluck('price'); // get all price on order id
+            $sum = collect($orderDetail)->sum(); // jumlahkan semua harganya
+            return $sum;
+        };
+        // send update to order table
         $result->save();
+         ////////////////////////////// EDIT TOTAL IN ORDER TABLE ///////////////////////////
 
         //return 
         return response()->json(['data'=>$result->all()]);

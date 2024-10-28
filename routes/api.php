@@ -20,6 +20,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/me',[AuthController::class,'me']);
 
     // ORDERS
+    // list order
+    Route::get('/order', [OrderController::class,'index']);
+    // show order
+    Route::get('/order/{id}', [OrderController::class,'show',]);
     // create order
     Route::post('/create_order',[OrderController::class,'store'])->middleware([UserOrderMiddleware::class]);
     

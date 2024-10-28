@@ -17,4 +17,14 @@ class Order extends Model
         $orderDetail = OrderDetail::where('order_id', $order_id)->pluck('price');
         return collect($orderDetail)->sum();
     }
+
+    /**
+     * Get all of the comments for the Order
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function OrderDetail()
+    {
+        return $this->hasMany(OrderDetail::class, 'order_id', 'id');
+    }
 }
