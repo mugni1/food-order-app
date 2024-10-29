@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\UserOrderMiddleware;
 use App\Http\Middleware\AbleCreateUpdateItem;
+use App\Http\Middleware\AbleDoneOrder;
 use App\Http\Middleware\UserFinishOrderMiddleware;
 use App\Http\Middleware\ManagerCreateUserMiddleware;
 

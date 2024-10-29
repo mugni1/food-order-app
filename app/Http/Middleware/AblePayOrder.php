@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserFinishOrderMiddleware
+class AblePayOrder
 {
     /**
      * Handle an incoming request.
@@ -16,8 +16,8 @@ class UserFinishOrderMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->role_id != 2) {
-            return response()->json(['message'=>'You don’t have permission to access on this page'],403);
+        if (Auth::user()->role_id != 1 && Auth::user()->role_id != 4) {
+            return response()->json(["message"=>'You don’t have permission to access on this page'], 403);
         }
         return $next($request);
     }
