@@ -20,7 +20,7 @@ class OrderController extends Controller
 
     public function show($id){
         $result = Order::select(['id','customer_name','table_no','status','waitress_id','cashier_id','total','order_date','order_time'])->findOrFail($id);
-        return $result->loadMissing('OrderDetail:order_id,price,item_id','OrderDetail.Item:id,name,price');
+        return $result->loadMissing('OrderDetail:order_id,item_id','OrderDetail.Item:id,name,price','Waitress:id,name,email,role_id','Waitress.Role:id,name','Cashier:id,name,email,role_id','Waitress.Role:id,name');
     }
 
     public function store(Request $request){

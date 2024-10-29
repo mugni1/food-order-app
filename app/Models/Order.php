@@ -34,13 +34,20 @@ class Order extends Model
         return $sum;
     }
 
-    /**
-     * Get all of the comments for the Order
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function OrderDetail()
     {
         return $this->hasMany(OrderDetail::class, 'order_id', 'id');
     }
+
+    public function Waitress()
+    {
+        return $this->belongsTo(User::class, 'waitress_id', 'id');
+    }
+
+    public function Cashier()
+    {
+        return $this->belongsTo(User::class, 'cashier_id', 'id');
+    }
+
+    
 }
