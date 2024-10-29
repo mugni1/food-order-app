@@ -20,7 +20,7 @@ class OrderController extends Controller
 
     public function show($id){
         $result = Order::select(['id','customer_name','table_no','status','waitress_id','cashier_id','total','order_date','order_time'])->findOrFail($id);
-        return $result->loadMissing('OrderDetail:order_id,item_id','OrderDetail.Item:id,name,price','Waitress:id,name,email,role_id','Waitress.Role:id,name','Cashier:id,name,email,role_id','Waitress.Role:id,name');
+        return response()->json(["data"=> $result->loadMissing('OrderDetail:order_id,item_id','OrderDetail.Item:id,name,price','Waitress:id,name,email,role_id','Waitress.Role:id,name','Cashier:id,name,email,role_id','Waitress.Role:id,name')]);
     }
 
     public function store(Request $request){
@@ -68,5 +68,22 @@ class OrderController extends Controller
 
         //return 
         return response()->json(['data'=>$result->all()]);
+    }
+    
+    public function setAsDone($id){
+        //cari order dengan id yg sudah di tentukan di params
+        $order = Order::findOrFail($id);
+
+        //cek apakah status ordered
+        if ($order->status != "ordered") {
+            return response()->json(['message'=>'Cannot be read and edit this status'],403);
+        }
+        
+        //ubah status menjadi done
+        $order->status = "done";
+        $order->save();
+
+
+        return response()->json(["data"=>$order]);
     }
 }

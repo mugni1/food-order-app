@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Middleware\UserOrderMiddleware;
 use App\Http\Middleware\AbleCreateUpdateItem;
 use App\Http\Middleware\AbleDoneOrder;
+use App\Http\Middleware\AbleFinishOrder;
 use App\Http\Middleware\UserFinishOrderMiddleware;
 use App\Http\Middleware\ManagerCreateUserMiddleware;
 
@@ -25,8 +26,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/order', [OrderController::class,'index']);
     // show order
     Route::get('/order/{id}', [OrderController::class,'show',]);
-    // create order
+    // create order | ORDERED
     Route::post('/create_order',[OrderController::class,'store'])->middleware([UserOrderMiddleware::class]);
+    // finish order | DONE
+    Route::get('/order/{id}/set_done', [OrderController::class,'setAsDone'])->middleware([AbleFinishOrder::class]);
+
     
     // USERS
     // create user khusus manager
