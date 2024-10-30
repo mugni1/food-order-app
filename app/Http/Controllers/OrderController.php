@@ -82,8 +82,20 @@ class OrderController extends Controller
         //ubah status menjadi done
         $order->status = "done";
         $order->save();
-
-
         return response()->json(["data"=>$order]);
+    }
+
+    public function setAsPaid($id){
+        //cari order dengan id yg sudah di tentuukan di params
+        $order = Order::findOrFail($id);
+        
+        //cek order apakah status done
+        if ($order->status != "done") {
+            return response()->json(['message'=>'Cannot be read and edit this status'],403);
+        }
+        
+        $order->status = "paid";
+        $order->save();
+        return response()->json(['data'=>$order]);
     }
 }

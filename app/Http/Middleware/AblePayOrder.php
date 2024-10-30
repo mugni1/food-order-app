@@ -16,7 +16,7 @@ class AblePayOrder
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->role_id != 1 && Auth::user()->role_id != 4) {
+        if (Auth::user()->role_id != 3 && Auth::user()->role_id != 4) {
             return response()->json(["message"=>'You don’t have permission to access on this page'], 403);
         }
         return $next($request);

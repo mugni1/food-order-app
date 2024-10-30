@@ -11,6 +11,7 @@ use App\Http\Middleware\UserOrderMiddleware;
 use App\Http\Middleware\AbleCreateUpdateItem;
 use App\Http\Middleware\AbleDoneOrder;
 use App\Http\Middleware\AbleFinishOrder;
+use App\Http\Middleware\AblePayOrder;
 use App\Http\Middleware\UserFinishOrderMiddleware;
 use App\Http\Middleware\ManagerCreateUserMiddleware;
 
@@ -30,6 +31,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/create_order',[OrderController::class,'store'])->middleware([UserOrderMiddleware::class]);
     // finish order | DONE
     Route::get('/order/{id}/set_done', [OrderController::class,'setAsDone'])->middleware([AbleFinishOrder::class]);
+    // done pay order | PAID
+    Route::get('/order/{id}/set_paid', [OrderController::class,'setAsPaid'])->middleware([AblePayOrder::class]);
 
     
     // USERS
