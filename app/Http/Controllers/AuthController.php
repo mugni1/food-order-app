@@ -41,8 +41,20 @@ class AuthController extends Controller
         
         // add token ke detail user
         $result->token = $token;
-        // return | kembalikan hasil 
+
+        // return | tampikan hasil 
         return response()->json(['data'=>$result]);
+    }
+    
+    public function logout(Request $request){
+        // cara 1
+        //$user = Auth::user()->tokens()->delete();
+
+        //cara 2
+        $request->user()->tokens()->delete();
+
+        //return message succes delete token
+        return response()->json(['message'=>'Succes Logout']);
     }
 
     public function me(){
