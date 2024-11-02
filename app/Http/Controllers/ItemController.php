@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Laravel\Pail\ValueObjects\Origin\Console;
 
 class ItemController extends Controller
 {
@@ -12,7 +13,7 @@ class ItemController extends Controller
         $request->validate([
             'name' => 'required|max:255',
             'price' => 'required|integer',
-            'image' => 'mimes:png,jpg'
+            'image' => 'mimes:png,jpg,jfif'
         ]);
         
         $newNameImage = null; //nama default null jika tidak ada gambar yg di upload
@@ -64,8 +65,14 @@ class ItemController extends Controller
         return response()->json(['status'=>"Succes Update Item","data"=>$update]);
     }
 
+    public function delete($id){
+        $item = Item::findOrFail($id);
+        $item->delete();
+        return response()->json(["status"=>"succes delete this item","data"=>$item]);
+    }
+
     public function show(){
-        $items = Item::get(['id','name','price','created_at','updated_at',]);
+        $items = Item::get(['id','name','price','image','created_at','updated_at',]);
         return response()->json(["data"=>$items]);
     }
 }

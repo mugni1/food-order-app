@@ -46,6 +46,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/create_item',[ItemController::class,'store'])->middleware([AbleCreateUpdateItem::class]);
     // update items
     Route::put('/item/{id}/update',[ItemController::class,'update'])->middleware([AbleCreateUpdateItem::class]);
+    // delete items
+    Route::delete('/item/{id}/delete', [ItemController::class,'delete'])->middleware([AbleCreateUpdateItem::class]);
 });
 
 //GET ITEMS LIST
