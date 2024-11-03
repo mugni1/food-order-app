@@ -65,13 +65,18 @@ class ItemController extends Controller
         return response()->json(['status'=>"Succes Update Item","data"=>$update]);
     }
 
+    public function show($id){
+        $item = Item::findOrFail($id);
+        return response()->json(['data'=>$item]);
+    }
+
     public function delete($id){
         $item = Item::findOrFail($id);
         $item->delete();
         return response()->json(["status"=>"succes delete this item","data"=>$item]);
     }
 
-    public function show(){
+    public function index(){
         $items = Item::get(['id','name','price','image','created_at','updated_at',]);
         return response()->json(["data"=>$items]);
     }

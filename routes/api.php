@@ -2,16 +2,16 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Middleware\AblePayOrder;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\AbleDoneOrder;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\AbleFinishOrder;
+use App\Http\Controllers\OrderController;
 use App\Http\Middleware\UserOrderMiddleware;
 use App\Http\Middleware\AbleCreateUpdateItem;
-use App\Http\Middleware\AbleDoneOrder;
-use App\Http\Middleware\AbleFinishOrder;
-use App\Http\Middleware\AblePayOrder;
 use App\Http\Middleware\UserFinishOrderMiddleware;
 use App\Http\Middleware\ManagerCreateUserMiddleware;
 
@@ -42,6 +42,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/create_user',[UserController::class,'store'])->middleware([ManagerCreateUserMiddleware::class]);
 
     //ITEMS
+    //list Item
+    //GET ITEMS LIST
+    Route::get('/items',[ItemController::class,'index']);
+    //show items
+    Route::get('/item/{id}/show', [ItemController::class,'show'])->middleware([AbleCreateUpdateItem::class]);
     // create items
     Route::post('/create_item',[ItemController::class,'store'])->middleware([AbleCreateUpdateItem::class]);
     // update items
@@ -49,6 +54,3 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // delete items
     Route::delete('/item/{id}/delete', [ItemController::class,'delete'])->middleware([AbleCreateUpdateItem::class]);
 });
-
-//GET ITEMS LIST
-Route::get('/items',[ItemController::class,'show']);
