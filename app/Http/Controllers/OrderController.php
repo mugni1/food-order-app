@@ -45,28 +45,32 @@ class OrderController extends Controller
         $items = $request->items; //get request items
         // collect all items and mapping all and send to order_detail table
         collect($items)->map(function($item) use($result) {
-            $FoodDrink = Item::where('id', $item)->first(); // get firt item in item table 
+            $FoodDrink = Item::where('id', $item[0])->first(); // get firt item in item table 
             // send to order_detail table
             OrderDetail::create([
                 'order_id' => $result->id,
-                'item_id' => $item,
-                'price' => $FoodDrink->price
+                'item_id' => $item[0],
+                'price' => $FoodDrink->price,
+                'qty' =>$item[1],
             ]);
         });
          //////////////////////////// END ORDER_DETAIL //////////////////////////////////
 
-        ////////////////////////////// EDIT TOTAL IN ORDER TABLE ///////////////////////////
+        // ////////////////////////////// EDIT TOTAL IN ORDER TABLE ///////////////////////////
         // change total column, before 0 to real price
         $result['total'] = function () use($result) {
-            $orderDetail = OrderDetail::where('order_id', $result->id)->pluck('price'); // get all price on order id
-            $sum = collect($orderDetail)->sum(); // jumlahkan semua harganya
+            $orderDetail = OrderDetail::where('order_id', $result->id)->select('price','qty')->get(); // get all price on order id
+            $priceQty = collect($orderDetail)->map(function($item){
+                return $item->price * $item->qty;
+            });
+            $sum = collect($priceQty)->sum(); // jumlahkan semua harganya
             return $sum;
         };
         // send update to order table
         $result->save();
-         ////////////////////////////// EDIT TOTAL IN ORDER TABLE ///////////////////////////
+        //  ////////////////////////////// EDIT TOTAL IN ORDER TABLE ///////////////////////////
 
-        //return 
+        // //return 
         return response()->json(['data'=>$result->all()]);
     }
     

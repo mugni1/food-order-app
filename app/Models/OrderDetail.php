@@ -10,7 +10,7 @@ class OrderDetail extends Model
 {
     use HasApiTokens;
     
-    protected $fillable = ['order_id', 'item_id', 'price'];
+    protected $fillable = ['order_id', 'item_id', 'price', 'qty'];
 
     /**
      * Get the user that owns the OrderDetail
