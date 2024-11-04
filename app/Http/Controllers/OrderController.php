@@ -102,4 +102,10 @@ class OrderController extends Controller
         $order->save();
         return response()->json(['data'=>$order]);
     }
+    public function drop($id){
+        $order = Order::findOrFail($id);
+        $order->delete();
+        
+        return response()->json(['message'=>'Success delete order']);
+    }
 }
