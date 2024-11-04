@@ -14,13 +14,13 @@ class OrderController extends Controller
 {
 
     public function index(){
-        $result = Order::select(['id','customer_name','table_no','order_date','order_time','status','total'])->get();
+        $result = Order::orderBy('id', 'desc')->select(['id','customer_name','table_no','order_date','order_time','status','total'])->get();
         return response()->json(["data"=>$result]);
     }
 
     public function show($id){
         $result = Order::select(['id','customer_name','table_no','status','waitress_id','cashier_id','total','order_date','order_time'])->findOrFail($id);
-        return response()->json(["data"=> $result->loadMissing('OrderDetail:order_id,item_id','OrderDetail.Item:id,name,price','Waitress:id,name,email,role_id','Waitress.Role:id,name','Cashier:id,name,email,role_id','Waitress.Role:id,name')]);
+        return response()->json(["data"=> $result->loadMissing('OrderDetail:order_id,item_id,price,qty','OrderDetail.Item:id,name','Waitress:id,name,email,role_id','Waitress.Role:id,name','Cashier:id,name,email,role_id','Waitress.Role:id,name')]);
     }
 
     public function store(Request $request){
