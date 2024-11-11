@@ -13,6 +13,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Middleware\UserOrderMiddleware;
 use App\Http\Middleware\AbleCreateUpdateItem;
 use App\Http\Middleware\AbleDeleteOrder;
+use App\Http\Middleware\AbleSeeOrderReport;
 use App\Http\Middleware\UserFinishOrderMiddleware;
 use App\Http\Middleware\ManagerCreateUserMiddleware;
 
@@ -38,6 +39,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/order/{id}/set_paid', [OrderController::class,'setAsPaid'])->middleware([AblePayOrder::class]);
     // delete order
     Route::delete('/order/{id}/delete', [OrderController::class, 'drop'])->middleware([AbleDeleteOrder::class]);
+    // order report
+    Route::get('/order-report', [OrderController::class,'orderReport'])->middleware([AbleSeeOrderReport::class]);
 
     
     // USERS

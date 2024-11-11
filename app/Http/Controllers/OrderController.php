@@ -13,16 +13,19 @@ use function Laravel\Prompts\select;
 class OrderController extends Controller
 {
 
+    // LIST ORDER
     public function index(){
         $result = Order::orderBy('id', 'desc')->select(['id','customer_name','table_no','order_date','order_time','status','total'])->get();
         return response()->json(["data"=>$result]);
     }
 
+    // SHOW DETAIL ORDER
     public function show($id){
         $result = Order::select(['id','customer_name','table_no','status','waitress_id','cashier_id','total','order_date','order_time'])->findOrFail($id);
         return response()->json(["data"=> $result->loadMissing('OrderDetail:order_id,item_id,price,qty','OrderDetail.Item:id,name','Waitress:id,name,email,role_id','Waitress.Role:id,name','Cashier:id,name,email,role_id','Waitress.Role:id,name')]);
     }
 
+    // CREATE ORDER
     public function store(Request $request){
         $request->validate([
             'customer_name' => 'required|max:225',
@@ -74,6 +77,7 @@ class OrderController extends Controller
         return response()->json(['data'=>$result->all()]);
     }
     
+    // SET AS DONE ORDER
     public function setAsDone($id){
         //cari order dengan id yg sudah di tentukan di params
         $order = Order::findOrFail($id);
@@ -89,6 +93,7 @@ class OrderController extends Controller
         return response()->json(["data"=>$order]);
     }
 
+    // SET AS PAID ORDER
     public function setAsPaid($id){
         //cari order dengan id yg sudah di tentuukan di params
         $order = Order::findOrFail($id);
@@ -102,10 +107,28 @@ class OrderController extends Controller
         $order->save();
         return response()->json(['data'=>$order]);
     }
+
+    //DELETE
     public function drop($id){
         $order = Order::findOrFail($id);
         $order->delete();
         
         return response()->json(['message'=>'Success delete order']);
+    }
+    
+    // ORDER REPORT
+    public function orderReport(Request $request){
+        $result = Order::whereMonth('order_date', $request->month)->orderBy('id', 'desc')->select(['id','customer_name','table_no','order_date','order_time','status','total'])->get();
+        $countResult =  Order::whereMonth('order_date', $request->month)->orderBy('id', 'desc')->select(['id','customer_name','table_no','order_date','order_time','status','total'])->count();
+        $maxPayment =  Order::whereMonth('order_date', $request->month)->orderBy('id', 'desc')->select(['id','customer_name','table_no','order_date','order_time','status','total'])->max('total');
+        $minPayment =  Order::whereMonth('order_date', $request->month)->orderBy('id', 'desc')->select(['id','customer_name','table_no','order_date','order_time','status','total'])->min('total');
+
+        $data = [
+            'orderCount' => $countResult,
+            'maxPayment' => $maxPayment,
+            'minPayment' => $minPayment,
+            'orderList' => $result
+        ];
+        return response()->json(["data"=>$data]);
     }
 }
